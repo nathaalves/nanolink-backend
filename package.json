@@ -9,7 +9,7 @@
     "pretest": "npm run test:load-env -- npx prisma migrate dev",
     "test": "npm run test:load-env jest",
     "prestart": "npx prisma migrate deploy",
-    "start": "node dist/src/server.js",
+    "start": "node src/server.js",
     "dev:load-env": "dotenv -e .env.development",
     "predev": "npm run dev:load-env -- npx prisma migrate dev",
     "dev": "npm run dev:load-env nodemon src/server.ts",
