@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { ZodError } from 'zod';
+import { NotFoundError } from '../errors/NotFoundError';
 
 export function errorHandler(
   err: Error | ZodError,
@@ -16,6 +17,13 @@ export function errorHandler(
         details: err.issues.map((err: any) => err.code),
       });
     }
+  }
+
+  if (err instanceof NotFoundError) {
+    return res.status(err.statusCode).send({
+      message: err.message,
+      action: err.action,
+    });
   }
 
   res.status(500).send('Erro inesperado.');
