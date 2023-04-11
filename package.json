@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "tsc",
     "test:load-env": "dotenv -e .env.test",
     "pretest": "npm run test:load-env -- npx prisma migrate dev",
     "test": "npm run test:load-env jest",
