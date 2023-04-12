@@ -17,4 +17,6 @@ linkRouter.get(
   shortLinkController.getURL
 );
 
+linkRouter.get('/', shortLinkController.goToHomeApp);
+
 export { linkRouter };
