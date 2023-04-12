@@ -17,7 +17,7 @@ async function addId(data: ShortLinkRequestBodyType) {
   const { nanoId, url } = await shortLinkRepository.insert(shortLinkData);
 
   return {
-    shortLink: `https://nnlk.nl/${nanoId}`,
+    shortLink: `nnlk.nl/${nanoId}`,
     url,
   };
 }
