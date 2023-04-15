@@ -1,7 +1,18 @@
 import { z } from 'zod';
 
 export const linkBodySchema = z.object({
-  url: z.string().url(),
+  url: z
+    .string()
+    .regex(
+      /^(?:(?:https?:\/\/)?(?:www\.)?|www\.)[\w-]+(?:\.[\w-]+)+[\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-]$/,
+      {
+        message: 'Informe uma URL válida.',
+      }
+    )
+    .transform((string) => {
+      if (string.includes('http')) return string;
+      return `https://${string}`;
+    }),
   title: z.string().min(1).optional(),
   description: z.string().min(1).optional(),
   image: z.string().optional(),
