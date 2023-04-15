@@ -5,9 +5,10 @@ function validate<T extends ZodRawShape>(
   schema: ZodObject<T>,
   type: 'body' | 'params'
 ) {
-  return (req: Request, _res: Response, next: NextFunction) => {
-    schema.parse(req[type as keyof Request]);
-
+  return (req: Request, res: Response, next: NextFunction) => {
+    res.locals[type as keyof Response] = schema.parse(
+      req[type as keyof Request]
+    );
     next();
   };
 }
