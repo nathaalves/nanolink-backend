@@ -3,7 +3,7 @@ import { shortLinkService } from '../services/shortLinkService';
 import { ShortLinkRequestBodyType } from '../types/shortLinkTypes';
 
 async function create(req: Request, res: Response) {
-  const data: ShortLinkRequestBodyType = req.body;
+  const data: ShortLinkRequestBodyType = res.locals.body;
 
   const url = await shortLinkService.addId(data);
 
@@ -11,7 +11,7 @@ async function create(req: Request, res: Response) {
 }
 
 async function getURL(req: Request, res: Response) {
-  const id: string = req.params.id;
+  const id: string = res.locals.params.id;
 
   const { url } = await shortLinkService.getURL(id);
 
