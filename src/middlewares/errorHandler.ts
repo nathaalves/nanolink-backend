@@ -13,8 +13,8 @@ export function errorHandler(
   if (err instanceof ZodError) {
     {
       return res.status(400).send({
-        message: 'Corpo da requisição inválido',
-        details: err.issues.map((err: any) => err.code),
+        message: 'Corpo da requisição inválido.',
+        details: err.issues,
       });
     }
   }
