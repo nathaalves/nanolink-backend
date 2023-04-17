@@ -2,22 +2,22 @@ import { Request, Response } from 'express';
 import { shortLinkService } from '../services/shortLinkService';
 import { ShortLinkRequestBodyType } from '../types/shortLinkTypes';
 
-async function create(req: Request, res: Response) {
+async function create(_req: Request, res: Response) {
   const data: ShortLinkRequestBodyType = res.locals.body;
 
-  const url = await shortLinkService.addId(data);
+  const urls = await shortLinkService.addId(data);
 
-  res.status(201).send(url);
+  res.status(201).send(urls);
 }
 
-async function getURL(req: Request, res: Response) {
+async function getURL(_req: Request, res: Response) {
   const id: string = res.locals.params.id;
 
-  const { url } = await shortLinkService.getURL(id);
+  const { originalURL } = await shortLinkService.getURL(id);
 
   res
     .writeHead(301, {
-      Location: url,
+      Location: originalURL,
     })
     .end();
 }
