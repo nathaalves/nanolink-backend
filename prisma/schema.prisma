@@ -12,7 +12,7 @@ datasource db {
 
 model Link {
   id          String   @id @default(uuid())
-  url         String
+  originalURL String   @unique
   nanoId      String   @unique
   title       String?
   description String?
