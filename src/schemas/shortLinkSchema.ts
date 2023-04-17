@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const linkBodySchema = z.object({
-  url: z
+  originalURL: z
     .string()
     .regex(
       /^(?:(?:https?:\/\/)?(?:www\.)?|www\.)[\w-]+(?:\.[\w-]+)+[\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-]$/,
