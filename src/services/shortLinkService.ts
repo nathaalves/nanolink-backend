@@ -14,11 +14,13 @@ async function addId(data: ShortLinkRequestBodyType) {
     nanoId: nanoid(),
   };
 
-  const { nanoId, url } = await shortLinkRepository.insert(shortLinkData);
+  const { nanoId, originalURL } = await shortLinkRepository.insert(
+    shortLinkData
+  );
 
   return {
     shortLink: `nnlk.nl/${nanoId}`,
-    url,
+    originalURL,
   };
 }
 
@@ -28,7 +30,7 @@ async function getURL(id: string) {
   if (!shortLink)
     throw new NotFoundError('Link não encontrado!', 'Informe um link válido');
 
-  return { url: shortLink.url };
+  return { originalURL: shortLink.originalURL };
 }
 
 export const shortLinkService = {
