@@ -9,17 +9,17 @@ async function insert(data: ShortLinkInsertDataType) {
   return shortLink;
 }
 
-async function find(id: string) {
+async function find(nanoId: string) {
   const shortLink = await prisma.link.findUnique({
     where: {
-      nanoId: id,
+      nanoId,
     },
   });
 
   if (shortLink) {
     await prisma.link.update({
       where: {
-        id,
+        nanoId,
       },
       data: {
         clicks: shortLink.clicks + 1,
