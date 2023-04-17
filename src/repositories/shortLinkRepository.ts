@@ -16,6 +16,17 @@ async function find(id: string) {
     },
   });
 
+  if (shortLink) {
+    await prisma.link.update({
+      where: {
+        id,
+      },
+      data: {
+        clicks: shortLink.clicks + 1,
+      },
+    });
+  }
+
   return shortLink;
 }
 
