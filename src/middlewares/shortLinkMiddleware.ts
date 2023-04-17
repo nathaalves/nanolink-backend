@@ -11,10 +11,12 @@ async function verifyIfURLExists(
 
   const shortLink = await shortLinkRepository.findOriginalURL(data.originalURL);
 
+  const SHORT_LINK_BASE_URL = process.env.SHORT_LINK_BASE_URL as string;
+
   if (shortLink) {
     return res.status(200).send({
       originalURL: shortLink.originalURL,
-      shortLink: `nnlk.nl/${shortLink.nanoId}`,
+      shortLink: `${SHORT_LINK_BASE_URL}/${shortLink.nanoId}`,
     });
   }
 

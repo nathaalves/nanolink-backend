@@ -18,8 +18,10 @@ async function addId(data: ShortLinkRequestBodyType) {
     shortLinkData
   );
 
+  const SHORT_LINK_BASE_URL = process.env.SHORT_LINK_BASE_URL as string;
+
   return {
-    shortLink: `nnlk.nl/${nanoId}`,
+    shortLink: `${SHORT_LINK_BASE_URL}/${nanoId}`,
     originalURL,
   };
 }
