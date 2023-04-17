@@ -19,7 +19,18 @@ async function find(id: string) {
   return shortLink;
 }
 
+async function findOriginalURL(originalURL: string) {
+  const shortLink = await prisma.link.findUnique({
+    where: {
+      originalURL,
+    },
+  });
+
+  return shortLink;
+}
+
 export const shortLinkRepository = {
   insert,
   find,
+  findOriginalURL,
 };
