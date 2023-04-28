@@ -1,11 +1,12 @@
 import { authRepository } from '../repositories/authRepository';
-import { UserCreationType } from '../types/authTypes';
+import { UserSignupBodyType } from '../types/authTypes';
 import { createHash } from '../utils/handleHash';
 
-async function encryptPassword(userData: UserCreationType) {
+async function encryptPassword(userData: UserSignupBodyType) {
   const { email, name, password } = userData;
 
   const password_hash = createHash(password);
+
   const { id } = await authRepository.createUser({
     name,
     email,
