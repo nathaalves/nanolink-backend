@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { UserSignupBodyType } from '../types/authTypes';
 import { authService } from '../services/authService';
 
-async function register(req: Request, res: Response) {
+async function signup(_req: Request, res: Response) {
   const user: UserSignupBodyType = res.locals.body;
 
   const id = await authService.encryptPassword(user);
@@ -11,5 +11,5 @@ async function register(req: Request, res: Response) {
 }
 
 export const authController = {
-  register,
+  signup,
 };
