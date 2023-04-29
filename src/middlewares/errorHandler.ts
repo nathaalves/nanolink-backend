@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { ZodError } from 'zod';
 import { NotFoundError } from '../errors/NotFoundError';
+import { ConflictError } from '../errors/ConflictError';
 
 export function errorHandler(
   err: Error | ZodError,
@@ -19,7 +20,7 @@ export function errorHandler(
     }
   }
 
-  if (err instanceof NotFoundError) {
+  if (err instanceof NotFoundError || err instanceof ConflictError) {
     return res.status(err.statusCode).send({
       message: err.message,
       action: err.action,
