@@ -9,7 +9,10 @@ async function verifyIfURLExists(
 ) {
   const data: ShortLinkRequestBodyType = res.locals.body;
 
-  const shortLink = await shortLinkRepository.findOriginalURL(data.originalURL);
+  const shortLink = await shortLinkRepository.findOriginalUrlByUserId(
+    data.originalURL,
+    null
+  );
 
   const SHORT_LINK_BASE_URL = process.env.SHORT_LINK_BASE_URL as string;
 
