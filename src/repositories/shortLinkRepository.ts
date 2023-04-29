@@ -30,10 +30,14 @@ async function find(nanoId: string) {
   return shortLink;
 }
 
-async function findOriginalURL(originalURL: string) {
-  const shortLink = await prisma.link.findUnique({
+async function findOriginalUrlByUserId(
+  originalURL: string,
+  userId: string | null
+) {
+  const shortLink = await prisma.link.findFirst({
     where: {
       originalURL,
+      userId,
     },
   });
 
@@ -43,5 +47,5 @@ async function findOriginalURL(originalURL: string) {
 export const shortLinkRepository = {
   insert,
   find,
-  findOriginalURL,
+  findOriginalUrlByUserId,
 };
