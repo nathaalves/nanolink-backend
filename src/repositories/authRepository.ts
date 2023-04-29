@@ -9,6 +9,16 @@ async function createUser(data: UserCreationType) {
   return user;
 }
 
+async function findUserByEmail(email: string) {
+  const user = await prisma.user.findUnique({
+    where: {
+      email,
+    },
+  });
+  return user;
+}
+
 export const authRepository = {
   createUser,
+  findUserByEmail,
 };
