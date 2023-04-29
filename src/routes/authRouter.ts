@@ -10,7 +10,7 @@ authRouter.post(
   '/signup',
   validateSchema.body(registrationSchema),
   authMiddleware.verifyIfPasswordsMatch,
-  authMiddleware.verifyIfUserAlreadyExists,
+  authMiddleware.verifyIfUserAlreadyRegistered,
   authController.signup
 );
 

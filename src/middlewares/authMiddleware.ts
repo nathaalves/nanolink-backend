@@ -3,7 +3,7 @@ import { authRepository } from '../repositories/authRepository';
 import { ConflictError } from '../errors/ConflictError';
 import { UserSignupBodyType } from '../types/authTypes';
 
-async function verifyIfUserAlreadyExists(
+async function verifyIfUserAlreadyRegistered(
   _req: Request,
   res: Response,
   next: NextFunction
@@ -41,6 +41,6 @@ async function verifyIfPasswordsMatch(
 }
 
 export const authMiddleware = {
-  verifyIfUserAlreadyExists,
+  verifyIfUserAlreadyRegistered,
   verifyIfPasswordsMatch,
 };
