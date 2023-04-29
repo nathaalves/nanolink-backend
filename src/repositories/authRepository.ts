@@ -18,7 +18,34 @@ async function findUserByEmail(email: string) {
   return user;
 }
 
+async function createSession(data: { userId: string; token: string }) {
+  const session = await prisma.session.create({
+    data,
+  });
+  return session;
+}
+
+async function findSession(id: string) {
+  const session = await prisma.session.findUnique({
+    where: {
+      id,
+    },
+  });
+  return session;
+}
+
+async function removeSession(id: string) {
+  await prisma.session.delete({
+    where: {
+      id,
+    },
+  });
+}
+
 export const authRepository = {
   createUser,
   findUserByEmail,
+  createSession,
+  findSession,
+  removeSession,
 };
