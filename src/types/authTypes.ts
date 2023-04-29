@@ -10,3 +10,9 @@ export type UserCreationType = LoginRequestBodyType & {
 export type UserSignupBodyType = UserCreationType & {
   passwordConfirmation: string;
 };
+
+export type JWTPayload = {
+  sessionId: string;
+  userId: string;
+  type: 'access' | 'refresh';
+};
