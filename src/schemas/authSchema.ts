@@ -1,11 +1,41 @@
 import { z } from 'zod';
 
 export const registrationSchema = z.object({
-  name: z.string().min(1),
+  name: z
+    .string({
+      required_error: 'O campo nome é obrigatório',
+    })
+    .min(1),
   email: z
-    .string()
-    .email()
+    .string({
+      required_error: 'O campo e-mail é obrigatório',
+    })
+    .email({ message: 'Informe um e-mail válido.' })
     .transform((string) => string.toLowerCase()),
-  password: z.string().min(8),
-  passwordConfirmation: z.string().min(8),
+  password: z
+    .string({
+      required_error: 'O campo senha é obrigatório',
+    })
+    .min(8, { message: 'A senha deve ter no mínimo 8 caracteres.' }),
+  passwordConfirmation: z
+    .string({
+      required_error: 'O campo confirmação de senha é obrigatório',
+    })
+    .min(8, { message: 'A senha deve ter no mínimo 8 caracteres.' }),
+});
+
+export const loginSchema = z.object({
+  email: z
+    .string({
+      required_error: 'O campo e-mail é obrigatório',
+    })
+    .email({
+      message: 'Informe um e-mail válido.',
+    })
+    .transform((string) => string.toLowerCase()),
+  password: z
+    .string({
+      required_error: 'O campo senha é obrigatório',
+    })
+    .min(8, { message: 'A senha deve ter no mínimo 8 caracteres.' }),
 });
