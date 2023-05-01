@@ -1,3 +1,4 @@
+import { InternalServerError } from '../errors';
 import { authRepository } from '../repositories/authRepository';
 import { UserSignupBodyType } from '../types/authTypes';
 import { createHash } from '../utils/handleHash';

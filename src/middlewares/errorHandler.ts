@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { ZodError } from 'zod';
-import { NotFoundError } from '../errors/NotFoundError';
-import { ConflictError } from '../errors/ConflictError';
+import { ConflictError, NotFoundError, UnauthorizedError } from '../errors';
 
 export function errorHandler(
   err: Error | ZodError,
@@ -12,15 +11,17 @@ export function errorHandler(
   console.error(err);
 
   if (err instanceof ZodError) {
-    {
-      return res.status(400).send({
-        message: 'Corpo da requisição inválido.',
-        details: err.issues,
-      });
-    }
+    return res.status(400).send({
+      message: 'Corpo da requisição inválido.',
+      details: err.issues,
+    });
   }
 
-  if (err instanceof NotFoundError || err instanceof ConflictError) {
+  if (
+    err instanceof NotFoundError ||
+    err instanceof ConflictError ||
+    err instanceof UnauthorizedError
+  ) {
     return res.status(err.statusCode).send({
       message: err.message,
       action: err.action,
