@@ -28,4 +28,6 @@ authRouter.get(
   authController.refresh
 );
 
+authRouter.get('/signout', authController.signout);
+
 export { authRouter };
