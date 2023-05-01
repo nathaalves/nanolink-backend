@@ -12,7 +12,6 @@ export type UserSignupBodyType = UserCreationType & {
 };
 
 export type JWTPayload = {
-  sessionId: string;
   userId: string;
   type: 'access' | 'refresh';
 };

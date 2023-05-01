@@ -15,16 +15,12 @@ async function signup(_req: Request, res: Response) {
 async function signin(_req: Request, res: Response) {
   const { id: userId, name, email }: User = res.locals.user;
 
-  const { id: sessionId } = await authService.createSession(userId);
-
   const accessToken = generateToken({
-    sessionId,
     userId,
     type: 'access',
   });
 
   const refreshToken = generateToken({
-    sessionId,
     userId,
     type: 'refresh',
   });

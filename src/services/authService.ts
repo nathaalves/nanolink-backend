@@ -17,13 +17,6 @@ async function encryptPassword(userData: UserSignupBodyType) {
   return id;
 }
 
-async function createSession(userId: string) {
-  const session = await authRepository.createSession(userId);
-
-  return session;
-}
-
 export const authService = {
   encryptPassword,
-  createSession,
 };
