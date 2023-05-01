@@ -18,9 +18,11 @@ async function findUserByEmail(email: string) {
   return user;
 }
 
-async function createSession(data: { userId: string; token: string }) {
+async function createSession(userId: string) {
   const session = await prisma.session.create({
-    data,
+    data: {
+      userId,
+    },
   });
   return session;
 }
