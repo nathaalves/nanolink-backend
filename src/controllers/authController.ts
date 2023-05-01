@@ -35,7 +35,19 @@ async function signin(_req: Request, res: Response) {
   res.status(200).send({ name, email, accessToken });
 }
 
+async function refresh(_req: Request, res: Response) {
+  const { userId } = res.locals.payload;
+
+  const accessToken = generateToken({
+    userId,
+    type: 'access',
+  });
+
+  res.status(200).send({ accessToken });
+}
+
 export const authController = {
   signup,
   signin,
+  refresh,
 };
