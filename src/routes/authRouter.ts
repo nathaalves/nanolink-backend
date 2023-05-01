@@ -22,4 +22,10 @@ authRouter.post(
   authController.signin
 );
 
+authRouter.get(
+  '/refresh',
+  authMiddleware.verifyToken('refresh'),
+  authController.refresh
+);
+
 export { authRouter };
