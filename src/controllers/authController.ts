@@ -46,8 +46,15 @@ async function refresh(_req: Request, res: Response) {
   res.status(200).send({ accessToken });
 }
 
+async function signout(_req: Request, res: Response) {
+  res.clearCookie('refreshToken');
+
+  res.status(200).send({ message: 'Logout realizado com sucesso.' });
+}
+
 export const authController = {
   signup,
   signin,
   refresh,
+  signout,
 };
