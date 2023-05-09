@@ -36,7 +36,7 @@ async function verifyIfPasswordsMatch(
 
   if (password !== passwordConfirmation) {
     throw new ConflictError(
-      'Password diferente do password de confirmação.',
+      'Senha diferente da senha de confirmação.',
       'verifique os campos e tente novamente.'
     );
   }
