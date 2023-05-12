@@ -1,23 +1,31 @@
 import { Request, Response } from 'express';
-import { shortLinkService } from '../services/shortLinkService';
-import { ShortLinkRequestBodyType } from '../types/shortLinkTypes';
+import { nanoLinkService } from '../services/nanoLinkService';
+import { NanoLinkRequestBodyType } from '../types/nanoLinkTypes';
+import { JWTPayload } from '../types/authTypes';
 
-async function create(_req: Request, res: Response) {
-  const data: ShortLinkRequestBodyType = res.locals.body;
+async function createNanoLink(_req: Request, res: Response) {
+  const nanotLinkData: NanoLinkRequestBodyType = res.locals.body;
+  const payload: JWTPayload | undefined = res.locals.payload;
 
-  const urls = await shortLinkService.addId(data);
+  const userId = payload ? payload.userId : null;
 
-  res.status(201).send(urls);
+  const nanoLink = await nanoLinkService.createNanoLink({
+    ...nanotLinkData,
+    userId,
+  });
+
+  res.status(201).send(nanoLink);
 }
 
-async function getURL(_req: Request, res: Response) {
-  const id: string = res.locals.params.id;
+async function redirectToOriginalURL(_req: Request, res: Response) {
+  const nanoId: string = res.locals.params.nanoId;
+  const nanoLink: NanoLinkRequestBodyType = res.locals.nanoLink;
 
-  const { originalURL } = await shortLinkService.getURL(id);
+  await nanoLinkService.updateClicksCount(nanoId);
 
   res
     .writeHead(301, {
-      Location: originalURL,
+      Location: nanoLink.originalURL,
     })
     .end();
 }
@@ -30,8 +38,8 @@ async function goToHomeApp(_req: Request, res: Response) {
     .end();
 }
 
-export const shortLinkController = {
-  create,
-  getURL,
+export const nanoLinkController = {
+  createNanoLink,
+  redirectToOriginalURL,
   goToHomeApp,
 };
