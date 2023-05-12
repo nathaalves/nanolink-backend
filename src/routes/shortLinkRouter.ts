@@ -1,24 +1,39 @@
 import { Router } from 'express';
-import { shortLinkController } from '../controllers/shortLinkController';
+import { nanoLinkController } from '../controllers/nanoLinkController';
 import { validateSchema } from '../middlewares/validateSchema';
-import { linkBodySchema, linkParamsSchema } from '../schemas/shortLinkSchema';
-import { shortLinkMiddleware } from '../middlewares/shortLinkMiddleware';
+import {
+  customNanoLinkBodySchema,
+  nanoLinkBodySchema,
+  nanoLinkParamSchema,
+} from '../schemas/nanoLinkSchema';
+import { nanoLinkMiddleware } from '../middlewares/nanoLinkMiddleware';
+import { authMiddleware } from '../middlewares/authMiddleware';
 
-const linkRouter = Router();
+const nanoLinkRouter = Router();
 
-linkRouter.post(
-  '/create',
-  validateSchema.body(linkBodySchema),
-  shortLinkMiddleware.verifyIfURLExists,
-  shortLinkController.create
+nanoLinkRouter.post(
+  '/nanolink/create',
+  validateSchema.body(nanoLinkBodySchema),
+  nanoLinkMiddleware.verifyIfURLExists,
+  nanoLinkController.createNanoLink
 );
 
-linkRouter.get(
-  '/:id',
-  validateSchema.params(linkParamsSchema),
-  shortLinkController.getURL
+nanoLinkRouter.post(
+  'nanolink/create-custom',
+  validateSchema.body(customNanoLinkBodySchema),
+  authMiddleware.verifyToken('access'),
+  nanoLinkMiddleware.verifyNanoIdAlreadyCreated,
+  nanoLinkMiddleware.verifyIfURLExists,
+  nanoLinkController.createNanoLink
 );
 
-linkRouter.get('/', shortLinkController.goToHomeApp);
+nanoLinkRouter.get(
+  '/:nanoId',
+  validateSchema.params(nanoLinkParamSchema),
+  nanoLinkMiddleware.verifyNanoIdExists,
+  nanoLinkController.redirectToOriginalURL
+);
 
-export { linkRouter };
+nanoLinkRouter.get('/', nanoLinkController.goToHomeApp);
+
+export { nanoLinkRouter };
