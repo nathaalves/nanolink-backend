@@ -1,27 +1,33 @@
 import { z } from 'zod';
 
-export const linkBodySchema = z.object({
-  originalURL: z
-    .string()
-    .regex(
-      /^(?:(?:https?:\/\/)?(?:www\.)?|www\.)[\w-]+(?:\.[\w-]+)+[\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-]$/,
-      {
-        message: 'Informe uma URL válida.',
-      }
-    )
-    .transform((string) => {
-      if (string.includes('http')) return string;
-      return `https://${string}`;
-    }),
-  title: z.string().min(1).optional(),
-  description: z.string().min(1).optional(),
-  image: z.string().optional(),
-  slug: z.string().min(1).optional(),
+const originalURL = z
+  .string()
+  .regex(
+    /^(?:(?:https?:\/\/)?(?:www\.)?|www\.)[\w-]+(?:\.[\w-]+)+[\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-]$/,
+    {
+      message: 'Informe uma URL válida.',
+    }
+  )
+  .transform((url) => {
+    const trimedUrl = url.trim();
+    const newUrl = trimedUrl.replace(/\/$/, '');
+    if (newUrl.includes('http')) return newUrl;
+    return `https://${newUrl}`;
+  });
+
+export const nanoLinkBodySchema = z.object({
+  originalURL,
 });
 
-export const linkParamsSchema = z.object({
-  id: z
-    .string()
-    .regex(/[a-zA-Z]{7}/g)
-    .length(7),
+const nanoId = z.string().regex(/^[a-zA-Z0-9_-]+$/);
+
+export const customNanoLinkBodySchema = z.object({
+  originalURL,
+  title: z.string().min(1).optional(),
+  image: z.string().optional(),
+  nanoId: nanoId.optional(),
+});
+
+export const nanoLinkParamSchema = z.object({
+  nanoId,
 });
