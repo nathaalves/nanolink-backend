@@ -19,7 +19,7 @@ nanoLinkRouter.post(
 );
 
 nanoLinkRouter.post(
-  'nanolink/create-custom',
+  '/nanolink/create-custom',
   validateSchema.body(customNanoLinkBodySchema),
   authMiddleware.verifyToken('access'),
   nanoLinkMiddleware.verifyNanoIdAlreadyCreated,
