@@ -9,25 +9,27 @@ async function insert(data: NanoLinkRequestBodyType) {
   return shortLink;
 }
 
-async function find(nanoId: string) {
+async function findNanoId(nanoId: string) {
   const shortLink = await prisma.link.findUnique({
     where: {
       nanoId,
     },
   });
 
-  if (shortLink) {
-    await prisma.link.update({
-      where: {
-        nanoId,
-      },
-      data: {
-        clicks: shortLink.clicks + 1,
-      },
-    });
-  }
-
   return shortLink;
+}
+
+async function updateClicksCount(nanoId: string) {
+  await prisma.link.update({
+    where: {
+      nanoId,
+    },
+    data: {
+      clicks: {
+        increment: 1,
+      },
+    },
+  });
 }
 
 async function findOriginalUrlByUserId(
@@ -46,6 +48,7 @@ async function findOriginalUrlByUserId(
 
 export const shortLinkRepository = {
   insert,
-  find,
+  findNanoId,
   findOriginalUrlByUserId,
+  updateClicksCount,
 };
