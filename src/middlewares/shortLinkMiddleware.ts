@@ -1,31 +1,77 @@
 import { Request, Response, NextFunction } from 'express';
-import { ShortLinkRequestBodyType } from '../types/shortLinkTypes';
-import { shortLinkRepository } from '../repositories/shortLinkRepository';
+import { NanoLinkRequestBodyType } from '../types/nanoLinkTypes';
+import { nanoLinkRepository } from '../repositories/nanoLinkRepository';
+import { ConflictError, NotFoundError } from '../errors';
+import { JWTPayload } from '../types/authTypes';
 
 async function verifyIfURLExists(
   _req: Request,
   res: Response,
   next: NextFunction
 ) {
-  const data: ShortLinkRequestBodyType = res.locals.body;
+  const data: NanoLinkRequestBodyType = res.locals.body;
+  const payload: JWTPayload | undefined = res.locals.payload;
 
-  const shortLink = await shortLinkRepository.findOriginalUrlByUserId(
+  const userId = payload ? payload.userId : null;
+
+  const nanoLink = await nanoLinkRepository.findOriginalUrlByUserId(
     data.originalURL,
-    null
+    userId
   );
 
-  const SHORT_LINK_BASE_URL = process.env.SHORT_LINK_BASE_URL as string;
+  if (nanoLink) {
+    const NANO_LINK_BASE_URL = process.env.NANO_LINK_BASE_URL as string;
 
-  if (shortLink) {
     return res.status(200).send({
-      originalURL: shortLink.originalURL,
-      shortLink: `${SHORT_LINK_BASE_URL}/${shortLink.nanoId}`,
+      ...nanoLink,
+      shortLink: `${NANO_LINK_BASE_URL}/${nanoLink.nanoId}`,
     });
   }
 
   next();
 }
 
-export const shortLinkMiddleware = {
+async function verifyNanoIdExists(
+  _req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  const nanoId: string = res.locals.params.nanoId;
+
+  const nanoLink = await nanoLinkRepository.findNanoId(nanoId);
+
+  if (!nanoLink) {
+    throw new NotFoundError('Link não encontrado!', 'Informe um link válido.');
+  }
+
+  res.locals.nanoLink = nanoLink;
+
+  next();
+}
+
+async function verifyNanoIdAlreadyCreated(
+  _req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  const nanoId: string = res.locals.body.nanoId;
+
+  if (!nanoId) return next();
+
+  const nanoLink = await nanoLinkRepository.findNanoId(nanoId);
+
+  if (nanoLink) {
+    throw new ConflictError(
+      'Já existe um link com esse slug!',
+      'Informe um slug diferente.'
+    );
+  }
+
+  next();
+}
+
+export const nanoLinkMiddleware = {
   verifyIfURLExists,
+  verifyNanoIdExists,
+  verifyNanoIdAlreadyCreated,
 };
