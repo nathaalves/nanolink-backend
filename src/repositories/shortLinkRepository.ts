@@ -46,7 +46,7 @@ async function findOriginalUrlByUserId(
   return shortLink;
 }
 
-export const shortLinkRepository = {
+export const nanoLinkRepository = {
   insert,
   findNanoId,
   findOriginalUrlByUserId,
