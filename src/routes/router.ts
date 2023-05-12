@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import { linkRouter } from './shortLinkRouter';
+import { nanoLinkRouter } from './nanoLinkRouter';
 import { authRouter } from './authRouter';
 
 const router = Router();
 
-router.use(linkRouter);
+router.use(nanoLinkRouter);
 router.use('/auth', authRouter);
 
 export { router };
