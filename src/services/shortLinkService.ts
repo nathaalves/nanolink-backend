@@ -1,41 +1,74 @@
 import { customAlphabet } from 'nanoid';
-import { shortLinkRepository } from '../repositories/shortLinkRepository';
-import { ShortLinkRequestBodyType } from '../types/shortLinkTypes';
-import { NotFoundError } from '../errors/NotFoundError';
+import { nanoLinkRepository } from '../repositories/nanoLinkRepository';
+import { NanoLinkRequestBodyType } from '../types/nanoLinkTypes';
+import { load } from 'cheerio';
+import fetch from 'node-fetch';
 
-async function addId(data: ShortLinkRequestBodyType) {
-  const nanoid = customAlphabet(
-    'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
-    7
-  );
+const genNanoId = customAlphabet(
+  'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
+  7
+);
 
-  const shortLinkData = {
-    ...data,
-    nanoId: nanoid(),
-  };
+const getCherioAPI = async (url: string) => {
+  try {
+    const response = await fetch(url);
+    const body = await response.text();
+    return load(body);
+  } catch (error) {
+    return null;
+  }
+};
 
-  const { nanoId, originalURL } = await shortLinkRepository.insert(
-    shortLinkData
-  );
+const handleNanoLinkData = async (data: NanoLinkRequestBodyType) => {
+  const nanoLinkData = { ...data };
 
-  const SHORT_LINK_BASE_URL = process.env.SHORT_LINK_BASE_URL as string;
+  const { title, image, nanoId, originalURL, userId } = nanoLinkData;
+
+  nanoLinkData.nanoId = nanoId ? nanoId : genNanoId();
+
+  const needCheerioAPI = (!title || !image) && userId;
+  const cherioAPI = needCheerioAPI ? await getCherioAPI(originalURL) : null;
+
+  if (!title) {
+    nanoLinkData.title = cherioAPI ? cherioAPI('title').text() : originalURL;
+  }
+
+  if (!image && cherioAPI) {
+    const faviconElement = cherioAPI(
+      'link[rel="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"]'
+    ).first();
+
+    const faviconUrl = faviconElement.attr('href');
+
+    if (faviconUrl) {
+      nanoLinkData.image =
+        faviconUrl?.substring(0, 4) === 'http'
+          ? faviconUrl
+          : originalURL + faviconUrl;
+    }
+  }
+
+  return nanoLinkData;
+};
+
+async function createNanoLink(data: NanoLinkRequestBodyType) {
+  const nanoLinkData = await handleNanoLinkData(data);
+
+  const nanoLink = await nanoLinkRepository.insert(nanoLinkData);
+
+  const NANO_LINK_BASE_URL = process.env.NANO_LINK_BASE_URL as string;
 
   return {
-    shortLink: `${SHORT_LINK_BASE_URL}/${nanoId}`,
-    originalURL,
+    ...nanoLink,
+    shortLink: `${NANO_LINK_BASE_URL}/${nanoLink.nanoId}`,
   };
 }
 
-async function getURL(id: string) {
-  const shortLink = await shortLinkRepository.find(id);
-
-  if (!shortLink)
-    throw new NotFoundError('Link não encontrado!', 'Informe um link válido');
-
-  return { originalURL: shortLink.originalURL };
+async function updateClicksCount(id: string) {
+  await nanoLinkRepository.updateClicksCount(id);
 }
 
-export const shortLinkService = {
-  addId,
-  getURL,
+export const nanoLinkService = {
+  createNanoLink,
+  updateClicksCount,
 };
