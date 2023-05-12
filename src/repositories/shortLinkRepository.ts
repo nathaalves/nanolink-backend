@@ -1,7 +1,7 @@
 import { prisma } from '../config/prisma';
-import { ShortLinkInsertDataType } from '../types/shortLinkTypes';
+import { NanoLinkRequestBodyType } from '../types/nanoLinkTypes';
 
-async function insert(data: ShortLinkInsertDataType) {
+async function insert(data: NanoLinkRequestBodyType) {
   const shortLink = await prisma.link.create({
     data,
   });
