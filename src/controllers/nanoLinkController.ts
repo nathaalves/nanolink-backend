@@ -17,6 +17,14 @@ async function createNanoLink(_req: Request, res: Response) {
   res.status(201).send(nanoLink);
 }
 
+async function getNanoLinks(_req: Request, res: Response) {
+  const payload: JWTPayload = res.locals.payload;
+
+  const nanoLinks = await nanoLinkService.getNanoLinks(payload.userId);
+
+  res.status(200).send(nanoLinks);
+}
+
 async function redirectToOriginalURL(_req: Request, res: Response) {
   const nanoId: string = res.locals.params.nanoId;
   const nanoLink: NanoLinkRequestBodyType = res.locals.nanoLink;
@@ -40,6 +48,7 @@ async function goToHomeApp(_req: Request, res: Response) {
 
 export const nanoLinkController = {
   createNanoLink,
+  getNanoLinks,
   redirectToOriginalURL,
   goToHomeApp,
 };
