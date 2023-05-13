@@ -28,6 +28,12 @@ nanoLinkRouter.post(
 );
 
 nanoLinkRouter.get(
+  '/nanolinks',
+  authMiddleware.verifyToken('access'),
+  nanoLinkController.getNanoLinks
+);
+
+nanoLinkRouter.get(
   '/:nanoId',
   validateSchema.params(nanoLinkParamSchema),
   nanoLinkMiddleware.verifyNanoIdExists,
