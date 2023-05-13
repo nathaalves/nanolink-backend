@@ -38,13 +38,25 @@ const handleNanoLinkData = async (data: NanoLinkRequestBodyType) => {
       'link[rel="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"]'
     ).first();
 
-    const faviconUrl = faviconElement.attr('href');
+    const href = faviconElement.attr('href');
 
-    if (faviconUrl) {
-      nanoLinkData.image =
-        faviconUrl?.substring(0, 4) === 'http'
-          ? faviconUrl
-          : originalURL + faviconUrl;
+    if (href) {
+      const faviconUrl =
+        href.substring(0, 4) === 'http'
+          ? href
+          : new URL(originalURL).origin + href;
+
+      const response = await fetch(faviconUrl);
+
+      const contentType = response.headers.get('content-type');
+
+      if (contentType && contentType.startsWith('image/')) {
+        const buffer = await response.arrayBuffer();
+
+        const base64 = Buffer.from(buffer).toString('base64');
+
+        nanoLinkData.image = `data:image/png;base64,${base64}`;
+      }
     }
   }
 
