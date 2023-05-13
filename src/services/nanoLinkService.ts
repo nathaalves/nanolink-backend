@@ -80,7 +80,13 @@ async function updateClicksCount(id: string) {
   await nanoLinkRepository.updateClicksCount(id);
 }
 
+async function getNanoLinks(userId: string) {
+  const nanoLinks = await nanoLinkRepository.getUserNanoLinks(userId);
+  return nanoLinks;
+}
+
 export const nanoLinkService = {
   createNanoLink,
   updateClicksCount,
+  getNanoLinks,
 };
