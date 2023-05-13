@@ -19,11 +19,11 @@ export const nanoLinkBodySchema = z.object({
   originalURL,
 });
 
-const nanoId = z.string().regex(/^[a-zA-Z0-9_-]+$/);
+const nanoId = z.string().regex(/^[0-9a-zA-Z-_]*$/);
 
 export const customNanoLinkBodySchema = z.object({
   originalURL,
-  title: z.string().min(1).optional(),
+  title: z.string().optional(),
   image: z.string().optional(),
   nanoId: nanoId.optional(),
 });
