@@ -46,9 +46,23 @@ async function findOriginalUrlByUserId(
   return shortLink;
 }
 
+async function getUserNanoLinks(userId: string) {
+  const nanoLinks = await prisma.link.findMany({
+    where: {
+      userId,
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+  });
+
+  return nanoLinks;
+}
+
 export const nanoLinkRepository = {
   insert,
   findNanoId,
   findOriginalUrlByUserId,
   updateClicksCount,
+  getUserNanoLinks,
 };
