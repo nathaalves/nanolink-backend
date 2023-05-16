@@ -30,7 +30,8 @@ const handleNanoLinkData = async (data: NanoLinkRequestBodyType) => {
   const cherioAPI = needCheerioAPI ? await getCherioAPI(originalURL) : null;
 
   if (!title) {
-    nanoLinkData.title = cherioAPI ? cherioAPI('title').text() : originalURL;
+    const pageTitle = cherioAPI ? cherioAPI('title').text() : originalURL;
+    nanoLinkData.title = pageTitle ? pageTitle : originalURL;
   }
 
   if (!image && cherioAPI) {
@@ -44,6 +45,8 @@ const handleNanoLinkData = async (data: NanoLinkRequestBodyType) => {
       const faviconUrl =
         href.substring(0, 4) === 'http'
           ? href
+          : href.substring(0, 2) === '//'
+          ? `http:${href}`
           : new URL(originalURL).origin + href;
 
       const response = await fetch(faviconUrl);
@@ -55,7 +58,7 @@ const handleNanoLinkData = async (data: NanoLinkRequestBodyType) => {
 
         const base64 = Buffer.from(buffer).toString('base64');
 
-        nanoLinkData.image = `data:image/png;base64,${base64}`;
+        nanoLinkData.image = `data:${contentType};base64,${base64}`;
       }
     }
   }
