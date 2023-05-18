@@ -13,5 +13,7 @@ export type UserSignupBodyType = UserCreationType & {
 
 export type JWTPayload = {
   userId: string;
+  name: string;
+  email: string;
   type: 'access' | 'refresh';
 };
