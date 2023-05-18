@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { UserSignupBodyType } from '../types/authTypes';
+import { JWTPayload, UserSignupBodyType } from '../types/authTypes';
 import { authService } from '../services/authService';
 import { generateToken } from '../utils/handleToken';
 import { User } from '@prisma/client';
@@ -17,11 +17,15 @@ async function signin(_req: Request, res: Response) {
 
   const accessToken = generateToken({
     userId,
+    name,
+    email,
     type: 'access',
   });
 
   const refreshToken = generateToken({
     userId,
+    name,
+    email,
     type: 'refresh',
   });
 
@@ -36,14 +40,11 @@ async function signin(_req: Request, res: Response) {
 }
 
 async function refresh(_req: Request, res: Response) {
-  const { userId } = res.locals.payload;
+  const { userId, name, email }: JWTPayload = res.locals.payload;
 
-  const accessToken = generateToken({
-    userId,
-    type: 'access',
-  });
+  const accessToken = generateToken({ userId, name, email, type: 'access' });
 
-  res.status(200).send({ accessToken });
+  res.status(200).send({ name, email, accessToken });
 }
 
 async function signout(_req: Request, res: Response) {
